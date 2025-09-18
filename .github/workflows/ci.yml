@@ -1,21 +1,32 @@
-name: CI Pipeline
+name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    
     steps:
-    - name: Checkout code
+    - name: Checkout repo
       uses: actions/checkout@v3
 
-    - name: Run basic test
-      run: echo "Code looks good!"
+    - name: Run test (simulation)
+      run: echo "✅ Tests passed"
 
-    - name: Deploy simulation
-      run: |
-        echo "Pretend deploying app..."
-        ls -l
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3
+
+    - name: Deploy to GitHub Pages
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        branch: gh-pages   # Deployment branch
+        folder: .          # Deploy everything in root
